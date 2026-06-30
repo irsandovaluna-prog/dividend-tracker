@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
       period1: fiveYearsAgo.toISOString().split('T')[0],
       period2: new Date().toISOString().split('T')[0],
       interval: '1d',
-    });
+    }, { validateResult: false });
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });

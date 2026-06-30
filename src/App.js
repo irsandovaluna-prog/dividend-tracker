@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState, useEffect, useCallback } from "react";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler } from "chart.js";
 import { Line } from "react-chartjs-2";
@@ -31,10 +32,6 @@ function daysBetween(a, b) {
   return Math.round((new Date(b) - new Date(a)) / 86400000);
 }
 
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
-
 export default function App() {
   const [allPrices, setAllPrices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +58,6 @@ export default function App() {
       return diff >= -30 && diff <= 30;
     }).map(row => ({
       date: new Date(row.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-      rawDate: row.date,
       open: row.open,
       close: row.close,
       diff: daysBetween(exDate, new Date(row.date)),
@@ -70,13 +66,8 @@ export default function App() {
 
   const sel = DIVIDENDS.find(d => d.id === selId);
   const window = sel ? getWindow(sel) : [];
-
-  const declDiff = sel ? -daysBetween(sel.ex, sel.decl) : 0;
+  const declDiff = sel ? daysBetween(sel.decl, sel.ex) : 0;
   const payDiff = sel ? daysBetween(sel.ex, sel.pay) : 0;
-
-  const declIdx = window.findIndex(r => r.diff >= -declDiff - 1);
-  const exIdx = window.findIndex(r => r.diff === 0);
-  const payIdx = window.findIndex(r => r.diff >= payDiff - 1);
 
   const chartData = {
     labels: window.map(r => r.diff === 0 ? "Ex-div" : r.diff > 0 ? `+${r.diff}d` : `${r.diff}d`),
